@@ -1,14 +1,25 @@
 package com.cookietech.admoblibrarywithmediation.Manager
 
 import android.content.Context
-import androidx.lifecycle.Lifecycle
 
-class AdsManager private constructor(val adsProvider: AdsProvider) {
+class AdsManager private constructor() {
+
+     abstract class Builder<T> protected constructor(protected val context: Context,protected val unitId: String){
+         abstract fun build():T
+         protected var configuration = Configuration()
+         fun configure(configuration: Configuration):Builder<T>{
+             this.configuration = configuration
+             return this
+         }
+
+         protected var adLoadListener: AdLoadListener? = null
+
+         fun addListener(adLoadListener: AdLoadListener): Builder<T> {
+             this.adLoadListener = adLoadListener
+             return this
+         }
 
 
-
-     abstract class Builder protected constructor(private val context: Context,private val unitId: String){
-         abstract fun build():AdsManager
          companion object{
              fun nativeAdsBuilder(context: Context,unitId:String):NativeAdsBuilder{
                  return NativeAdsBuilder(context,unitId);
@@ -17,33 +28,45 @@ class AdsManager private constructor(val adsProvider: AdsProvider) {
              fun bannerAdsBuilder(context: Context,unitId: String):BannerAdsBuilder{
                  return BannerAdsBuilder(context,unitId)
              }
+
+             fun interstitialAdsBuilder(context: Context,unitId: String):InterstitialAdsBuilder{
+                 return InterstitialAdsBuilder(context,unitId)
+             }
+         }
+
+         class NativeAdsBuilder(context: Context,unitId: String): Builder<NativeAdsProvider>(context,unitId) {
+
+
+
+             override fun build(): NativeAdsProvider {
+
+                 return NativeAdsProvider(context, unitId,configuration,adLoadListener);
+             }
+
+
+         }
+
+         class BannerAdsBuilder(context: Context,unitId: String):Builder<BannerAdsProvider>(context,unitId){
+             override fun build(): BannerAdsProvider {
+                 TODO("Not yet implemented")
+             }
+
+
+         }
+
+
+         class InterstitialAdsBuilder(context: Context,unitId: String):Builder<InterstitialAdsProvider>(context, unitId){
+             override fun build(): InterstitialAdsProvider {
+                 TODO("Not yet implemented")
+             }
+
          }
      }
 
-    class NativeAdsBuilder(context: Context,unitId: String): Builder(context,unitId) {
-
-        fun addObserver(lifecycle: Lifecycle){
-
-        }
-
-        override fun build(): AdsManager {
-            TODO("Not yet implemented")
-        }
-
-    }
-
-    class BannerAdsBuilder(context: Context,unitId: String):Builder(context,unitId){
-        override fun build(): AdsManager {
-            TODO("Not yet implemented")
-        }
-
-    }
 
 
 
-    fun load():AdsProvider{
-        return adsProvider.load()
-    }
+
 
 
 
