@@ -125,9 +125,7 @@ class NativeAdsProvider internal constructor(
         return FetchOption<Fragment>()
     }
 
-    fun fetch():Fetcher<NativeAd> {
-        return FetchOption<NativeAd>().fetch()
-    }
+
 
 
 

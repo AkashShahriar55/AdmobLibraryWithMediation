@@ -1,6 +1,8 @@
 package com.cookietech.admoblibrarywithmediation.Manager
 
-class InterstitialAdsProvider: AdsProvider(Configuration()) {
+import com.google.android.gms.ads.interstitial.InterstitialAd
+
+class InterstitialAdsProvider: AdsProvider<InterstitialAd>(Configuration()) {
     override fun <option> loadInternal(fetcher: Fetcher<option>) {
         TODO("Not yet implemented")
     }
@@ -12,6 +14,7 @@ class InterstitialAdsProvider: AdsProvider(Configuration()) {
     override fun preLoad() {
         TODO("Not yet implemented")
     }
+
 
 
 }

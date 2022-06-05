@@ -1,9 +1,10 @@
 package com.cookietech.admoblibrarywithmediation.Manager
 
 import androidx.lifecycle.Lifecycle
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.interstitial.InterstitialAd
 
-class BannerAdsProvider:AdsProvider<InterstitialAd>(Configuration()) {
+class BannerAdsProvider:AdsProvider<AdView>(Configuration()) {
 
 
 

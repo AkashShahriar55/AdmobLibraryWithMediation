@@ -15,6 +15,10 @@ abstract class AdsProvider<adType>( private val configuration: Configuration) {
 
     protected abstract fun preLoad()
 
+    fun fetch():Fetcher<adType> {
+        return Fetcher()
+    }
+
     inner class Fetcher<option>(): LifecycleEventObserver {
         private var isDestroyed = false;
         private var callback: NativeAdsProvider.callback<option>? = null
