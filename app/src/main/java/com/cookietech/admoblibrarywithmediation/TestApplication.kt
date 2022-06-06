@@ -13,6 +13,7 @@ class TestApplication: Application() {
     inner class Container{
         lateinit var provider:NativeAdsProvider
         lateinit var interstitialProvider:InterstitialAdsProvider
+        lateinit var rewardedAdsProvider: RewardedAdsProvider
         init {
 
 
@@ -43,7 +44,22 @@ class TestApplication: Application() {
                     }
 
                 })
-//                .configure(Configuration().preload(2).setRetryTime(1000))
+                .configure(Configuration().preload(2).setRetryTime(1000))
+                .build()
+
+            rewardedAdsProvider = AdsManager.Builder
+                .rewardedAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/5224354917")
+                .addListener(object: AdLoadListener{
+                    override fun adLoaded(noOfAds: Int) {
+                        Log.d("sometag", "adLoaded: " + noOfAds)
+                    }
+
+                    override fun adLoadFailed(errorMessage: String) {
+                        Log.d("sometag", "adLoadFailed: " + errorMessage)
+                    }
+
+                })
+                .configure(Configuration().preload(2).setRetryTime(1000))
                 .build()
 
         }

@@ -3,6 +3,8 @@ package com.cookietech.admoblibrarywithmediation
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.cookietech.admoblibrarywithmediation.bannerad.AdaptiveBannerAdActivity
+import com.cookietech.admoblibrarywithmediation.bannerad.NormalBannerAdActivity
 import com.cookietech.admoblibrarywithmediation.databinding.ActivityMainBinding
 import com.cookietech.admoblibrarywithmediation.nativead.NativeAdActivity
 import interstitial.InterstitialAdActivity
@@ -38,6 +40,16 @@ class MainActivity : AppCompatActivity() {
         binding.btnNativeAdActivity.setOnClickListener {
             startNativeAdActivity()
         }
+
+        binding.bannerAdActivity.setOnClickListener {
+            startBAnnerAd()
+        }
+    }
+
+    private fun startBAnnerAd() {
+        intent = Intent(this,NormalBannerAdActivity::class.java)
+        //intent = Intent(this, AdaptiveBannerAdActivity::class.java)
+        startActivity(intent)
     }
 
     private fun startNativeAdActivity() {
