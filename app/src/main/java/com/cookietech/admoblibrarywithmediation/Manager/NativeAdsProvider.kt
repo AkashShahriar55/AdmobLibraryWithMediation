@@ -11,12 +11,18 @@ import com.tasnim.colorsplash.walkthrough.fragments.AdFragment
 import java.util.*
 
 class NativeAdsProvider internal constructor(
-    private val context: Context,
-    private val unitId: String,
+    context: Context,
+    unitId: String,
     configuration: Configuration,
-    private val adLoadListener: AdLoadListener?
+    adLoadListener: AdLoadListener?
 ):
-    AdsProvider<SimpleNativeAd>(configuration) {
+    AdsProvider<SimpleNativeAd>(context,unitId,configuration,adLoadListener) {
+
+    init {
+        if(configuration.isPreload()){
+            preLoad()
+        }
+    }
 
     var isFragment = false;
 
@@ -30,16 +36,6 @@ class NativeAdsProvider internal constructor(
 
     private var isAdLoading: Boolean = false
 
-    init {
-
-
-        if(configuration.isPreload()){
-            Log.d(NativeAdsProvider.TAG, "ad preload starting : ")
-            preLoad()
-        }
-
-
-    }
 
 
 
@@ -51,91 +47,7 @@ class NativeAdsProvider internal constructor(
     }
 
 
-    inner class FetchOption<option>(){
 
-        fun fetch():Fetcher<option>{
-            return Fetcher()
-        }
-
-
-    }
-
-
-
-
-
-
-    override fun <option> loadInternal(
-        getCallback: () -> callback<option>?,
-        isDestroyed: () -> Boolean
-    ) {
-        val adLoader = AdLoader.Builder(context,unitId)
-            .forNativeAd {
-                if(isDestroyed()){
-                    it.destroy();
-                    return@forNativeAd
-                }
-
-                Log.d(TAG, "ad loaded on fetch: ${getCallback()}")
-
-//                if(callback!!.javaClass.isAssignableFrom(NativeAd::class.java)){
-//                    Log.d(TAG, "loadInternal: class ok")
-//                }else{
-//                    Log.d(TAG, "loadInternal: class not ok")
-//                }
-
-                val simpleNativeAd = SimpleNativeAd(context,it)
-                getCallback()?.onAdFetched(simpleNativeAd as option)
-
-
-
-
-
-
-            }.withAdListener(object : AdListener(){
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    super.onAdFailedToLoad(adError)
-                    Log.d(TAG, "ad load failed on fetch: ${getCallback()}")
-                    getCallback()?.onAdFetchFailed(adError.message)
-                }
-            })
-            .withNativeAdOptions( NativeAdOptions.Builder().build()).build()
-
-        adLoader.loadAd(AdRequest.Builder().build() )
-    }
-
-
-
-    override fun preLoad(){
-        if(adsStack.size < configuration.getNoOfAds()){
-
-            val adLoader = AdLoader.Builder(context,unitId)
-                .forNativeAd {
-
-                    val simpleNativeAd = SimpleNativeAd(context,it)
-
-                    adsStack.add(simpleNativeAd)
-
-                    adLoadListener?.adLoaded(adsStack.size)
-
-
-                    preLoad()
-                    Log.d(TAG, "loadAd: ad loaded stack size : " + adsStack.size)
-
-                }.withAdListener(object : AdListener(){
-                    override fun onAdFailedToLoad(adError: LoadAdError) {
-                        super.onAdFailedToLoad(adError)
-
-                        Log.d(TAG, "onAdFailedToLoad: $adError")
-                        adLoadListener?.adLoadFailed(adError.message)
-
-                    }
-                })
-                .withNativeAdOptions( NativeAdOptions.Builder().build()).build()
-
-            adLoader.loadAd(AdRequest.Builder().build() )
-        }
-    }
 
 
 
@@ -145,21 +57,24 @@ class NativeAdsProvider internal constructor(
         return super.fetch()
     }
 
-    override fun <option> handlePreLoadedAds(
-        getCallback: () -> callback<option>?,
-        isDestroyed: () -> Boolean
+
+    override fun loadAd(
+        adLoadSuccess: (ad: SimpleNativeAd) -> Unit,
+        adLoadFailed: (message: String) -> Unit
     ) {
-        if(!isDestroyed()){
-            if(adsStack.empty()){
-                Log.d(NativeAdsProvider.TAG, "ad is empty: ")
-                getCallback()?.onAdFetchFailed("ad is empty");
-            }else{
+        val adLoader = AdLoader.Builder(context,unitId)
+            .forNativeAd {
+                val simpleNativeAd = SimpleNativeAd(context,it)
+                adLoadSuccess(simpleNativeAd)
+            }.withAdListener(object : AdListener(){
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    super.onAdFailedToLoad(adError)
+                    adLoadFailed(adError.message)
+                }
+            })
+            .withNativeAdOptions( NativeAdOptions.Builder().build()).build()
 
-                getCallback()?.onAdFetched(adsStack.pop() as option)
-
-                preLoad()
-            }
-        }
+        adLoader.loadAd(AdRequest.Builder().build() )
     }
 
 

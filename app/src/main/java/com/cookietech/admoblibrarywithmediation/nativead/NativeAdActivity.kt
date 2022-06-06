@@ -24,7 +24,10 @@ class NativeAdActivity : AppCompatActivity() {
 
 
 
-        (application as TestApplication).container.provider.fetch().addObserver(lifecycle).addCallback(object :
+        (application as TestApplication).container.provider
+            .fetch()
+            .addObserver(lifecycle)
+            .addCallback(object :
             AdsProvider.callback<SimpleNativeAd> {
             override fun onAdFetched(ads: SimpleNativeAd) {
                 Log.d(TAG, "onAdFetched: ")

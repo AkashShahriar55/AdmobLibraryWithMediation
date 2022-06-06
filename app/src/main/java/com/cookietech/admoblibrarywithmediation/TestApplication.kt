@@ -5,6 +5,8 @@ import android.util.Log
 import com.cookietech.admoblibrarywithmediation.Manager.*
 import com.cookietech.admoblibrarywithmediation.nativead.NativeAdActivity
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
+import com.google.android.gms.ads.nativead.NativeAd
 
 class TestApplication: Application() {
 
@@ -19,7 +21,8 @@ class TestApplication: Application() {
 
 
 
-            provider = AdsManager.Builder.nativeAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/2247696110")
+            provider = AdsProviderBuilder
+                .nativeAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/2247696110")
                 .addListener(object : AdLoadListener{
                     override fun adLoaded(noOfAds: Int) {
                         Log.d("sometag", "adLoaded: " + noOfAds)
@@ -34,7 +37,8 @@ class TestApplication: Application() {
                 .build()
 
 
-            interstitialProvider = AdsManager.Builder.interstitialAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/1033173712")
+            interstitialProvider = AdsProviderBuilder
+                .interstitialAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/1033173712")
                 .addListener(object : AdLoadListener{
                     override fun adLoaded(noOfAds: Int) {
                         Log.d("sometag", "adLoaded: " + noOfAds)
@@ -48,7 +52,8 @@ class TestApplication: Application() {
 //                .configure(Configuration().preload(2).setRetryTime(1000))
                 .build()
 
-            bannerProvider = AdsManager.Builder.bannerAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/6300978111")
+            bannerProvider = AdsProviderBuilder
+                .bannerAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/6300978111")
                 .anchoredBannerAds(300)
                 .addListener(object : AdLoadListener{
                     override fun adLoaded(noOfAds: Int) {
@@ -60,10 +65,10 @@ class TestApplication: Application() {
                     }
 
                 })
-//                .configure(Configuration().preload(2).setRetryTime(1000))
+                .configure(Configuration().preload(2).setRetryTime(1000))
                 .build()
 
-            rewardedAdsProvider = AdsManager.Builder
+            rewardedAdsProvider = AdsProviderBuilder
                 .rewardedAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/5224354917")
                 .addListener(object: AdLoadListener{
                     override fun adLoaded(noOfAds: Int) {
