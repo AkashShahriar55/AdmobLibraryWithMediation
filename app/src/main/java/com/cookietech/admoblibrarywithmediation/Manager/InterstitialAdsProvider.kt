@@ -10,7 +10,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 class InterstitialAdsProvider(
     private val context: Context,
     private val unitId: String,
-    private val configuration: Configuration,
+    configuration: Configuration,
     private val adLoadListener: AdLoadListener?
 ): AdsProvider<InterstitialAd>(configuration) {
 
@@ -73,6 +73,20 @@ class InterstitialAdsProvider(
 
     }
 
+    override fun <option> handlePreLoadedAds(
+        getCallback: () -> callback<option>?,
+        isDestroyed: () -> Boolean
+    ) {
+        if(!isDestroyed()){
+            if(adsStack.empty()){
+                Log.d(NativeAdsProvider.TAG, "ad is empty: ")
+                getCallback()?.onAdFetchFailed("ad is empty");
+            }else{
+                getCallback()?.onAdFetched(adsStack.pop() as option)
+                preLoad()
+            }
+        }
+    }
 
 
 }

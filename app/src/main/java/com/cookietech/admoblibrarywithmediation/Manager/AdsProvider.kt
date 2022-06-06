@@ -6,10 +6,11 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import java.util.*
 
-abstract class AdsProvider<adType>( private val configuration: Configuration) {
+abstract class AdsProvider<adType>( protected val configuration: Configuration) {
 
     protected val adsStack = Stack<adType>()
     protected abstract fun<option> loadInternal(getCallback:()->callback<option>?, isDestroyed: ()->Boolean)
+    protected abstract fun<option> handlePreLoadedAds(getCallback:()->callback<option>?, isDestroyed: ()->Boolean)
     protected abstract fun preLoad()
 
 
@@ -18,7 +19,7 @@ abstract class AdsProvider<adType>( private val configuration: Configuration) {
     }
 
 
-    fun fetch():Fetcher<adType> {
+    open fun fetch():Fetcher<adType> {
         return Fetcher()
     }
 
@@ -39,21 +40,15 @@ abstract class AdsProvider<adType>( private val configuration: Configuration) {
             Log.d(NativeAdsProvider.TAG, "addCallback: callback set ")
             this.callback = callback
             if(configuration.isPreload() && adsStack.size > 0){
-                handlePreloadedAds()
+                handlePreLoadedAds({
+                    callback
+                },{
+                    isDestroyed
+                })
             }
         }
 
-        fun handlePreloadedAds(){
-            if(!isDestroyed()){
-                if(adsStack.empty()){
-                    Log.d(NativeAdsProvider.TAG, "ad is empty: ")
-                    callback?.onAdFetchFailed("ad is empty");
-                }else{
-                    callback?.onAdFetched(adsStack.pop() as option)
-                    preLoad()
-                }
-            }
-        }
+
 
 
         fun addObserver(lifecycle: Lifecycle): Fetcher<option> {
@@ -72,7 +67,12 @@ abstract class AdsProvider<adType>( private val configuration: Configuration) {
                     isDestroyed
                 })
             }else{
-                handlePreloadedAds()
+
+                handlePreLoadedAds({
+                    callback
+                },{
+                    isDestroyed
+                })
             }
 
 

@@ -7,15 +7,18 @@ import androidx.lifecycle.*
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
+import com.tasnim.colorsplash.walkthrough.fragments.AdFragment
 import java.util.*
 
 class NativeAdsProvider internal constructor(
     private val context: Context,
     private val unitId: String,
-    private val configuration: Configuration,
+    configuration: Configuration,
     private val adLoadListener: AdLoadListener?
 ):
-    AdsProvider<NativeAd>(configuration) {
+    AdsProvider<SimpleNativeAd>(configuration) {
+
+    var isFragment = false;
 
     var videoOptions = VideoOptions.Builder()
         .setStartMuted(true)
@@ -59,6 +62,9 @@ class NativeAdsProvider internal constructor(
 
 
 
+
+
+
     override fun <option> loadInternal(
         getCallback: () -> callback<option>?,
         isDestroyed: () -> Boolean
@@ -78,10 +84,14 @@ class NativeAdsProvider internal constructor(
 //                    Log.d(TAG, "loadInternal: class not ok")
 //                }
 
+                val simpleNativeAd = SimpleNativeAd(context,it)
+                getCallback()?.onAdFetched(simpleNativeAd as option)
 
 
 
-                getCallback()?.onAdFetched(it as option)
+
+
+
             }.withAdListener(object : AdListener(){
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     super.onAdFailedToLoad(adError)
@@ -94,13 +104,17 @@ class NativeAdsProvider internal constructor(
         adLoader.loadAd(AdRequest.Builder().build() )
     }
 
+
+
     override fun preLoad(){
         if(adsStack.size < configuration.getNoOfAds()){
 
             val adLoader = AdLoader.Builder(context,unitId)
                 .forNativeAd {
 
-                    adsStack.add(it)
+                    val simpleNativeAd = SimpleNativeAd(context,it)
+
+                    adsStack.add(simpleNativeAd)
 
                     adLoadListener?.adLoaded(adsStack.size)
 
@@ -124,15 +138,29 @@ class NativeAdsProvider internal constructor(
     }
 
 
-    fun asFragment(): FetchOption<Fragment> {
 
-        return FetchOption<Fragment>()
+
+    override fun fetch(): Fetcher<SimpleNativeAd> {
+        isFragment = false
+        return super.fetch()
     }
 
+    override fun <option> handlePreLoadedAds(
+        getCallback: () -> callback<option>?,
+        isDestroyed: () -> Boolean
+    ) {
+        if(!isDestroyed()){
+            if(adsStack.empty()){
+                Log.d(NativeAdsProvider.TAG, "ad is empty: ")
+                getCallback()?.onAdFetchFailed("ad is empty");
+            }else{
 
+                getCallback()?.onAdFetched(adsStack.pop() as option)
 
-
-
+                preLoad()
+            }
+        }
+    }
 
 
 }

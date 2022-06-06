@@ -1,83 +1,33 @@
-package com.tasnim.colorsplash.walkthrough.fragments
+package com.cookietech.admoblibrarywithmediation.Manager
 
-import android.os.Bundle
-import android.os.Handler
-import android.util.Log
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.TranslateAnimation
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.fragment.app.Fragment
+import android.widget.*
+import androidx.fragment.app.FragmentActivity
 import com.cookietech.admoblibrarywithmediation.R
-
 import com.google.android.gms.ads.nativead.MediaView
-
 import com.google.android.gms.ads.nativead.NativeAd
-
 import com.google.android.gms.ads.nativead.NativeAdView
 
-
-
-class AdFragment(private val nativeAd: NativeAd) : Fragment() {
-
-    private var mLastClickTime: Long = 0
-    private var isAdloaded: Boolean = false
-    lateinit var adview: NativeAdView
+class SimpleNativeAd(context: Context, nativeAd: NativeAd) : FrameLayout(context) {
 
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = layoutInflater.inflate(R.layout.ad_fragment, container, false)
-        adview = view.findViewById<NativeAdView>(R.id.unifiedNativeAdView)
+    init {
 
-        return view
+
+        val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.default_native_ad_view, null)
+        val nativeAdView = view.findViewById<NativeAdView>(R.id.unifiedNativeAdView)
+        view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        addView(view)
+
+
+        populateUnifiedNativeAdView(nativeAd,nativeAdView)
+
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        populateUnifiedNativeAdView(nativeAd,adview)
-        Log.d("native_ads", "onViewCreated: ")
-    }
-
-    fun animateAdview(){
-
-        if(isAdloaded){
-            Handler().postDelayed({
-                adview.visibility = View.VISIBLE
-               // adview.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_left));
-                adview.startAnimation(inFromRightAnimation())
-
-            }, 1000)
-        }
-    }
-
-    private fun inFromRightAnimation(): Animation? {
-        val inFromRight: Animation = TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, +1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f)
-        inFromRight.duration = 1000
-        inFromRight.interpolator = AccelerateInterpolator()
-        return inFromRight
-    }
-
-    fun isAdLoaded():Boolean{
-        return isAdloaded
-    }
-
-
-
-
-
-
-
 
     private fun populateUnifiedNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
         // Set the media view. Media content will be automatically populated in the media view once
@@ -118,7 +68,7 @@ class AdFragment(private val nativeAd: NativeAd) : Fragment() {
             adView.iconView?.visibility = View.GONE
         } else {
             (adView.iconView as ImageView).setImageDrawable(
-                    nativeAd.icon?.drawable)
+                nativeAd.icon?.drawable)
             adView.iconView?.visibility = View.VISIBLE
         }
 //
@@ -160,13 +110,4 @@ class AdFragment(private val nativeAd: NativeAd) : Fragment() {
 
 
     }
-
-
-    companion object{
-
-        fun newInstance(nativeAd: NativeAd): AdFragment {
-            return AdFragment(nativeAd)
-        }
-    }
-
 }

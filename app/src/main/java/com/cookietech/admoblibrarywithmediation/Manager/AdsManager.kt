@@ -1,6 +1,8 @@
 package com.cookietech.admoblibrarywithmediation.Manager
 
 import android.content.Context
+import com.google.android.gms.ads.AdSize
+import kotlin.math.max
 
 class AdsManager private constructor() {
 
@@ -49,8 +51,30 @@ class AdsManager private constructor() {
          }
 
          class BannerAdsBuilder(context: Context,unitId: String):Builder<BannerAdsProvider>(context,unitId){
+
+             var adSize = AdSize.BANNER
+
+
+             fun anchoredBannerAds(widthInDp:Int): BannerAdsBuilder {
+                 adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context,widthInDp)
+                 return this
+             }
+
+             fun inlineBannerAds(widthInDp: Int): BannerAdsBuilder {
+                 adSize = AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(context,widthInDp)
+                 return this
+             }
+
+             fun inlineMaxHeightBannerAds(widthInDp: Int,maxHeightInDp:Int): BannerAdsBuilder {
+                 adSize = AdSize.getInlineAdaptiveBannerAdSize(widthInDp, maxHeightInDp)
+                 return this
+             }
+
+
+
+
              override fun build(): BannerAdsProvider {
-                 TODO("Not yet implemented")
+                 return BannerAdsProvider(context, unitId, configuration, adLoadListener,adSize)
              }
 
 
