@@ -34,6 +34,16 @@ class MainActivity : AppCompatActivity() {
         binding.rewardAdFragment.setOnClickListener {
             startRewardedAdFragment()
         }
+
+        binding.btnNativeAdActivity.setOnClickListener {
+            startNativeAdActivity()
+        }
+    }
+
+    private fun startNativeAdActivity() {
+        intent = Intent(this,NativeAdActivity::class.java)
+        startActivity(intent)
+
     }
 
     fun startInterstitialActivity() {

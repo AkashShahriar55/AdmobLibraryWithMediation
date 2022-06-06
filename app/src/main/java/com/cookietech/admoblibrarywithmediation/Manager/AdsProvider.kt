@@ -9,7 +9,7 @@ import java.util.*
 abstract class AdsProvider<adType>( private val configuration: Configuration) {
 
     protected val adsStack = Stack<adType>()
-    protected abstract fun<option> loadInternal(callback: callback<option>?, isDestroyed: ()->Boolean)
+    protected abstract fun<option> loadInternal(getCallback:()->callback<option>?, isDestroyed: ()->Boolean)
     protected abstract fun preLoad()
 
 
@@ -36,6 +36,7 @@ abstract class AdsProvider<adType>( private val configuration: Configuration) {
         }
 
         fun addCallback(callback: callback<option>){
+            Log.d(NativeAdsProvider.TAG, "addCallback: callback set ")
             this.callback = callback
             if(configuration.isPreload() && adsStack.size > 0){
                 handlePreloadedAds()
@@ -65,9 +66,11 @@ abstract class AdsProvider<adType>( private val configuration: Configuration) {
         init {
 
             if(!configuration.isPreload() || adsStack.size < 1){
-                loadInternal(callback) {
+                loadInternal({
+                    callback
+                },{
                     isDestroyed
-                }
+                })
             }else{
                 handlePreloadedAds()
             }

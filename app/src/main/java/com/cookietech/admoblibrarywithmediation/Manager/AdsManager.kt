@@ -58,8 +58,9 @@ class AdsManager private constructor() {
 
 
          class InterstitialAdsBuilder(context: Context,unitId: String):Builder<InterstitialAdsProvider>(context, unitId){
+
              override fun build(): InterstitialAdsProvider {
-                 TODO("Not yet implemented")
+                 return InterstitialAdsProvider(context, unitId, configuration, adLoadListener)
              }
 
          }

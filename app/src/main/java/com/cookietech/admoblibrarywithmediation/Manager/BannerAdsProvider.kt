@@ -14,7 +14,10 @@ class BannerAdsProvider:AdsProvider<AdView>(Configuration()) {
         TODO("Not yet implemented")
     }
 
-    override fun <option> loadInternal(callback: callback<option>?, isDestroyed: () -> Boolean) {
+    override fun <option> loadInternal(
+        getCallback: () -> callback<option>?,
+        isDestroyed: () -> Boolean
+    ) {
         TODO("Not yet implemented")
     }
 
