@@ -34,19 +34,17 @@ class AdsManager private constructor() {
              fun interstitialAdsBuilder(context: Context,unitId: String):InterstitialAdsBuilder{
                  return InterstitialAdsBuilder(context,unitId)
              }
+             fun rewardedAdsBuilder(context: Context,unitId: String):RewardedAdsBuilder{
+                 return RewardedAdsBuilder(context,unitId)
+             }
          }
 
          class NativeAdsBuilder(context: Context,unitId: String): Builder<NativeAdsProvider>(context,unitId) {
-
-
-
-
 
              override fun build(): NativeAdsProvider {
 
                  return NativeAdsProvider(context, unitId,configuration,adLoadListener);
              }
-
 
          }
 
@@ -85,6 +83,14 @@ class AdsManager private constructor() {
 
              override fun build(): InterstitialAdsProvider {
                  return InterstitialAdsProvider(context, unitId, configuration, adLoadListener)
+             }
+
+         }
+
+         class RewardedAdsBuilder(context: Context,unitId: String):Builder<RewardedAdsProvider>(context, unitId){
+
+             override fun build(): RewardedAdsProvider {
+                 return RewardedAdsProvider(context, unitId, configuration, adLoadListener)
              }
 
          }
