@@ -9,18 +9,12 @@ class BannerAdsProvider:AdsProvider<AdView>(Configuration()) {
 
 
 
-    override fun <option> loadInternal(fetcher: Fetcher<option>) {
-        TODO("Not yet implemented")
-
-
-
-    }
-
-    override fun <option> handlePreloadedAds(fetcher: Fetcher<option>) {
-        TODO("Not yet implemented")
-    }
 
     override fun preLoad() {
+        TODO("Not yet implemented")
+    }
+
+    override fun <option> loadInternal(callback: callback<option>?, isDestroyed: () -> Boolean) {
         TODO("Not yet implemented")
     }
 

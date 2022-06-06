@@ -16,20 +16,23 @@ class TestApplication: Application() {
     inner class Container{
         lateinit var provider:NativeAdsProvider
         init {
-            provider = AdsManager.Builder
-                .nativeAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/2247696110")
-                .addListener(object : AdLoadListener {
+
+
+
+            provider = AdsManager.Builder.nativeAdsBuilder(this@TestApplication,"unit")
+                .addListener(object : AdLoadListener{
                     override fun adLoaded(noOfAds: Int) {
-                        Log.d(NativeAdActivity.TAG, "adLoaded: $noOfAds")
+                        Log.d("sometag", "adLoaded: " + noOfAds)
                     }
 
                     override fun adLoadFailed(errorMessage: String) {
-                        Log.d(NativeAdActivity.TAG, "adLoaded: $errorMessage")
+                        Log.d("sometag", "adLoadFailed: " + errorMessage)
                     }
 
                 })
-//                .configure(Configuration().preload(2))
+                .configure(Configuration().preload(3).setRetryTime(1000))
                 .build()
+
         }
     }
 

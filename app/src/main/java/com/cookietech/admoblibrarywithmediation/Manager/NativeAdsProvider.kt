@@ -17,6 +17,14 @@ class NativeAdsProvider internal constructor(
 ):
     AdsProvider<NativeAd>(configuration) {
 
+    var videoOptions = VideoOptions.Builder()
+        .setStartMuted(true)
+        .build()
+
+    var adOptions = com.google.android.gms.ads.formats.NativeAdOptions.Builder()
+        .setVideoOptions(videoOptions)
+        .build()
+
     private var isAdLoading: Boolean = false
 
     init {
@@ -51,40 +59,31 @@ class NativeAdsProvider internal constructor(
 
 
 
-
-
-
-
-    override fun<option> handlePreloadedAds(fetcher: Fetcher<option>) {
-
-        if(fetcher.isDestroyed())
-            return
-
-        if(adsStack.empty()){
-            Log.d(TAG, "ad is empty: ")
-            fetcher.getCallback()?.onAdFetchFailed("ad is empty");
-        }else{
-            fetcher.getCallback()?.onAdFetched(adsStack.pop() as option)
-            preLoad()
-        }
-    }
-
-
-    override fun<option> loadInternal(fetcher: Fetcher<option>){
+    override fun <option> loadInternal(callback: callback<option>?, isDestroyed: () -> Boolean) {
         val adLoader = AdLoader.Builder(context,unitId)
             .forNativeAd {
-                if(fetcher.isDestroyed()){
+                if(isDestroyed()){
                     it.destroy();
                     return@forNativeAd
                 }
 
-                Log.d(TAG, "ad loaded on fetch: ${fetcher.getCallback()}")
-                fetcher.getCallback()?.onAdFetched(it as option)
+                Log.d(TAG, "ad loaded on fetch: ${callback}")
+
+                if(callback!!.javaClass.isAssignableFrom(NativeAd::class.java)){
+                    Log.d(TAG, "loadInternal: class ok")
+                }else{
+                    Log.d(TAG, "loadInternal: class not ok")
+                }
+
+
+
+
+                callback?.onAdFetched(it as option)
             }.withAdListener(object : AdListener(){
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     super.onAdFailedToLoad(adError)
-                    Log.d(TAG, "ad load failed on fetch: ${fetcher.getCallback()}")
-                   fetcher.getCallback()?.onAdFetchFailed(adError.message)
+                    Log.d(TAG, "ad load failed on fetch: ${callback}")
+                    callback?.onAdFetchFailed(adError.message)
                 }
             })
             .withNativeAdOptions( NativeAdOptions.Builder().build()).build()
@@ -112,6 +111,7 @@ class NativeAdsProvider internal constructor(
                         isAdLoading = false
                         Log.d(TAG, "onAdFailedToLoad: $adError")
                         adLoadListener?.adLoadFailed(adError.message)
+
                     }
                 })
                 .withNativeAdOptions( NativeAdOptions.Builder().build()).build()
@@ -122,6 +122,7 @@ class NativeAdsProvider internal constructor(
 
 
     fun asFragment(): FetchOption<Fragment> {
+
         return FetchOption<Fragment>()
     }
 
@@ -129,9 +130,6 @@ class NativeAdsProvider internal constructor(
 
 
 
-    interface callback<option>{
-        fun onAdFetched(ads:option)
-        fun onAdFetchFailed(message:String)
-    }
+
 
 }
