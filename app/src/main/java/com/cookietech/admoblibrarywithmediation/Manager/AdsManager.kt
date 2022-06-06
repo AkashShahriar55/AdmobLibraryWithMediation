@@ -38,6 +38,8 @@ class AdsManager private constructor() {
 
 
 
+
+
              override fun build(): NativeAdsProvider {
 
                  return NativeAdsProvider(context, unitId,configuration,adLoadListener);
@@ -61,7 +63,16 @@ class AdsManager private constructor() {
              }
 
          }
+
+
      }
+
+
+
+
+    fun createSomething(): AdsManager {
+        return this
+    }
 
 
 

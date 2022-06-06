@@ -4,10 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.cookietech.admoblibrarywithmediation.Manager.AdLoadListener
-import com.cookietech.admoblibrarywithmediation.Manager.AdsManager
-import com.cookietech.admoblibrarywithmediation.Manager.Configuration
-import com.cookietech.admoblibrarywithmediation.Manager.NativeAdsProvider
+import androidx.fragment.app.Fragment
+import com.cookietech.admoblibrarywithmediation.Manager.*
 import com.cookietech.admoblibrarywithmediation.R
 import com.cookietech.admoblibrarywithmediation.TestApplication
 import com.google.android.gms.ads.AdListener
@@ -29,7 +27,9 @@ class NativeAdActivity : AppCompatActivity() {
 
 
 
-        (application as TestApplication).container.provider.fetch().addObserver(lifecycle).addCallback(object : NativeAdsProvider.callback<NativeAd>{
+
+        (application as TestApplication).container.provider.fetch().addObserver(lifecycle).addCallback(object :
+            AdsProvider.callback<NativeAd> {
             override fun onAdFetched(ads: NativeAd) {
                 Log.d(TAG, "onAdFetched: ")
             }
