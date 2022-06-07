@@ -34,6 +34,10 @@ abstract class AdsProviderBuilder<T> protected constructor(protected val context
         fun rewardedAdsBuilder(context: Context, unitId: String):RewardedAdsBuilder{
             return RewardedAdsBuilder(context,unitId)
         }
+        fun appOpenAdsBuilder(context: Context, unitId: String):AppOpenAdsBuilder{
+            return AppOpenAdsBuilder(context,unitId)
+        }
+
     }
 
     class NativeAdsBuilder constructor(context: Context, unitId: String): AdsProviderBuilder<NativeAdsProvider>(context,unitId) {
@@ -88,6 +92,14 @@ abstract class AdsProviderBuilder<T> protected constructor(protected val context
 
         override fun build(): RewardedAdsProvider {
             return RewardedAdsProvider(context, unitId, configuration, adLoadListener)
+        }
+
+    }
+
+    class AppOpenAdsBuilder(context: Context, unitId: String):AdsProviderBuilder<AppOpenAdsProvider>(context, unitId){
+
+        override fun build(): AppOpenAdsProvider {
+            return AppOpenAdsProvider(context, unitId, configuration, adLoadListener)
         }
 
     }

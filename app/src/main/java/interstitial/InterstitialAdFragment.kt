@@ -50,6 +50,7 @@ class InterstitialAdFragment : Fragment() {
                 showInterstitiaAd()
             }
         })
+
     }
 
     fun showInterstitiaAd()

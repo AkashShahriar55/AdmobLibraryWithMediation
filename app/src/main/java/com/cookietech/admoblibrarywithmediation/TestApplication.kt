@@ -11,12 +11,14 @@ import com.google.android.gms.ads.nativead.NativeAd
 class TestApplication: Application() {
 
     lateinit var container:Container
+    lateinit var appOpenAdManager: AppOpenAdManager
 
     inner class Container{
         lateinit var provider:NativeAdsProvider
         lateinit var interstitialProvider:InterstitialAdsProvider
         lateinit var bannerProvider:BannerAdsProvider
         lateinit var rewardedAdsProvider: RewardedAdsProvider
+        lateinit var appOpenAdsProvider: AppOpenAdsProvider
         init {
 
 
@@ -83,6 +85,21 @@ class TestApplication: Application() {
                 .configure(Configuration().preload(2).linearRetryTime(1000,5))
                 .build()
 
+            appOpenAdsProvider = AdsProviderBuilder
+                .appOpenAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/3419835294")
+                .addListener(object: AdLoadListener{
+                    override fun adLoaded(noOfAds: Int) {
+                        Log.d("sometag", "adLoaded: " + noOfAds)
+                    }
+
+                    override fun adLoadFailed(errorMessage: String) {
+                        Log.d("sometag", "adLoadFailed: " + errorMessage)
+                    }
+
+                })
+                .configure(Configuration().preload(2).linearRetryTime(1000,5))
+                .build()
+
         }
     }
 
@@ -97,6 +114,9 @@ class TestApplication: Application() {
         MobileAds.initialize(this) {
             Log.d("ads_initialize", "onCreate: " + it.adapterStatusMap)
         }
+
+        appOpenAdManager = AppOpenAdManager(this)
+
     }
 
 }
