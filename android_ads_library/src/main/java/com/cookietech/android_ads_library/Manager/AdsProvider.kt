@@ -1,4 +1,4 @@
-package com.cookietech.admoblibrarywithmediation.Manager
+package com.cookietech.android_ads_library.Manager
 
 import android.content.Context
 import android.os.Handler
@@ -9,13 +9,11 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.nativead.NativeAd
-import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.rewarded.RewardedAd
 import java.util.*
 import kotlin.math.min
 
-abstract class AdsProvider<adType> protected constructor(protected val context: Context,protected val unitId:String,protected val configuration: Configuration, private val adLoadListener: AdLoadListener?) {
+abstract class AdsProvider<adType> protected constructor(protected val context: Context, protected val unitId:String, protected val configuration: Configuration, private val adLoadListener: AdLoadListener?) {
 
     protected val adsStack = Stack<adType>()
 
@@ -104,7 +102,7 @@ abstract class AdsProvider<adType> protected constructor(protected val context: 
     }
 
 
-    fun fetch(callback: callback<adType>,listener: AdEventListener? = null):Fetcher<adType> {
+    fun fetch(callback: callback<adType>, listener: AdEventListener? = null): Fetcher<adType> {
         val fullScreenContentCallback = object : FullScreenContentCallback(){
             override fun onAdClicked() {
                 listener?.onAdClicked()
@@ -129,11 +127,11 @@ abstract class AdsProvider<adType> protected constructor(protected val context: 
         return Fetcher(callback,fullScreenContentCallback)
     }
 
-    open fun fetch(callback: callback<adType>):Fetcher<adType> {
+    open fun fetch(callback: callback<adType>): Fetcher<adType> {
         return Fetcher(callback)
     }
 
-    inner class Fetcher<option> constructor(private val callback: callback<option>,private val fullScreenContentCallback: FullScreenContentCallback? = null): LifecycleEventObserver {
+    inner class Fetcher<option> constructor(private val callback: callback<option>, private val fullScreenContentCallback: FullScreenContentCallback? = null): LifecycleEventObserver {
         private var isDestroyed = false;
         private var currentAd:option? = null
 
@@ -195,11 +193,11 @@ abstract class AdsProvider<adType> protected constructor(protected val context: 
             if(isDestroyed){
                 currentAd?.let {
                     when{
-                        currentAd is SimpleNativeAd->{
+                        currentAd is SimpleNativeAd ->{
                            ( currentAd as SimpleNativeAd).getNativeAd().destroy()
                         }
 
-                        currentAd is SimpleBannerAd->{
+                        currentAd is SimpleBannerAd ->{
                             ( currentAd as SimpleBannerAd).getBannerAd().destroy()
                         }
                     }

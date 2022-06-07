@@ -1,9 +1,10 @@
-package com.cookietech.admoblibrarywithmediation.Manager
+package com.cookietech.android_ads_library.Manager
 
 import android.content.Context
-import android.util.Log
+import com.cookietech.android_ads_library.Manager.AdLoadListener
+import com.cookietech.android_ads_library.Manager.AdsProvider
+import com.cookietech.android_ads_library.Manager.Configuration
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback

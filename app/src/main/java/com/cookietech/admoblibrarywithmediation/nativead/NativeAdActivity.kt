@@ -4,9 +4,12 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.cookietech.admoblibrarywithmediation.Manager.*
+
 import com.cookietech.admoblibrarywithmediation.TestApplication
 import com.cookietech.admoblibrarywithmediation.databinding.ActivityNativeAdBinding
+import com.cookietech.android_ads_library.Manager.AdsProvider
+import com.cookietech.android_ads_library.Manager.AppOpenAdManager
+import com.cookietech.android_ads_library.Manager.SimpleNativeAd
 
 class NativeAdActivity : AppCompatActivity() {
 

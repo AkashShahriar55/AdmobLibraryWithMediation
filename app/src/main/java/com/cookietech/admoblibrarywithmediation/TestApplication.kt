@@ -2,8 +2,8 @@ package com.cookietech.admoblibrarywithmediation
 
 import android.app.Application
 import android.util.Log
-import com.cookietech.admoblibrarywithmediation.Manager.*
 import com.cookietech.admoblibrarywithmediation.nativead.NativeAdActivity
+import com.cookietech.android_ads_library.Manager.*
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
@@ -16,9 +16,9 @@ class TestApplication: Application() {
     lateinit var appOpenAdManager: AppOpenAdManager
 
     inner class Container{
-        var provider:NativeAdsProvider
-        var interstitialProvider:InterstitialAdsProvider
-        var bannerProvider:BannerAdsProvider
+        var provider: NativeAdsProvider
+        var interstitialProvider: InterstitialAdsProvider
+        var bannerProvider: BannerAdsProvider
         var rewardedAdsProvider: RewardedAdsProvider
         lateinit var appOpenAdsProvider: AppOpenAdsProvider
         init {

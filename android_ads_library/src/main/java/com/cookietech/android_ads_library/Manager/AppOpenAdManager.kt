@@ -1,21 +1,13 @@
-package com.cookietech.admoblibrarywithmediation.Manager
+package com.cookietech.android_ads_library.Manager
 
 import android.app.Activity
 import android.app.Application
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.PackageManagerCompat.LOG_TAG
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
-import androidx.lifecycle.ProcessLifecycleOwner
-import com.cookietech.admoblibrarywithmediation.TestApplication
 import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 
 

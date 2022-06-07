@@ -1,17 +1,15 @@
-package com.cookietech.admoblibrarywithmediation.Manager
+package com.cookietech.android_ads_library.Manager
 
 import android.content.Context
-import android.util.Log
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
-import com.google.android.gms.ads.interstitial.InterstitialAd
 
 class AppOpenAdsProvider(
-     context: Context,
-     unitId: String,
-     configuration: Configuration,
-     adLoadListener: AdLoadListener?)
+    context: Context,
+    unitId: String,
+    configuration: Configuration,
+    adLoadListener: AdLoadListener?)
     : AdsProvider<AppOpenAd>(context,unitId,configuration,adLoadListener){
 
     init {

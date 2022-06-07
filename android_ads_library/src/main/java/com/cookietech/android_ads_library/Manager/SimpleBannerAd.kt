@@ -1,4 +1,4 @@
-package com.cookietech.admoblibrarywithmediation.Manager
+package com.cookietech.android_ads_library.Manager
 
 import android.content.Context
 import android.util.AttributeSet

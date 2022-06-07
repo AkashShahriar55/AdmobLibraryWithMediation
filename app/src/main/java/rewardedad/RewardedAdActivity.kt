@@ -3,11 +3,12 @@ package rewardedad
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.cookietech.admoblibrarywithmediation.Manager.AdsProvider
-import com.cookietech.admoblibrarywithmediation.Manager.NativeAdsProvider
+
 import com.cookietech.admoblibrarywithmediation.R
 import com.cookietech.admoblibrarywithmediation.TestApplication
 import com.cookietech.admoblibrarywithmediation.databinding.ActivityRewardedAdBinding
+import com.cookietech.android_ads_library.Manager.AdsProvider
+import com.cookietech.android_ads_library.Manager.NativeAdsProvider
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback

@@ -1,8 +1,4 @@
-package com.cookietech.admoblibrarywithmediation.Manager
-
-import kotlin.math.exp
-import kotlin.math.max
-
+package com.cookietech.android_ads_library.Manager
 
 
 class Configuration {

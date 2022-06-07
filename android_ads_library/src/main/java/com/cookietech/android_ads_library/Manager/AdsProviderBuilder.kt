@@ -1,4 +1,4 @@
-package com.cookietech.admoblibrarywithmediation.Manager
+package com.cookietech.android_ads_library.Manager
 
 import android.content.Context
 import com.google.android.gms.ads.AdSize
@@ -6,7 +6,7 @@ import com.google.android.gms.ads.AdSize
 abstract class AdsProviderBuilder<T> protected constructor(protected val context: Context, protected val unitId: String){
     abstract fun build():T
     protected var configuration = Configuration()
-    fun configure(configuration: Configuration):AdsProviderBuilder<T>{
+    fun configure(configuration: Configuration): AdsProviderBuilder<T> {
         this.configuration = configuration
         return this
     }
@@ -20,21 +20,21 @@ abstract class AdsProviderBuilder<T> protected constructor(protected val context
 
 
     companion object{
-        fun nativeAdsBuilder(context: Context, unitId:String):NativeAdsBuilder{
+        fun nativeAdsBuilder(context: Context, unitId:String): NativeAdsBuilder {
             return NativeAdsBuilder(context,unitId);
         }
 
-        fun bannerAdsBuilder(context: Context, unitId: String):BannerAdsBuilder{
+        fun bannerAdsBuilder(context: Context, unitId: String): BannerAdsBuilder {
             return BannerAdsBuilder(context,unitId)
         }
 
-        fun interstitialAdsBuilder(context: Context, unitId: String):InterstitialAdsBuilder{
+        fun interstitialAdsBuilder(context: Context, unitId: String): InterstitialAdsBuilder {
             return InterstitialAdsBuilder(context,unitId)
         }
-        fun rewardedAdsBuilder(context: Context, unitId: String):RewardedAdsBuilder{
+        fun rewardedAdsBuilder(context: Context, unitId: String): RewardedAdsBuilder {
             return RewardedAdsBuilder(context,unitId)
         }
-        fun appOpenAdsBuilder(context: Context, unitId: String):AppOpenAdsBuilder{
+        fun appOpenAdsBuilder(context: Context, unitId: String): AppOpenAdsBuilder {
             return AppOpenAdsBuilder(context,unitId)
         }
 
@@ -49,7 +49,8 @@ abstract class AdsProviderBuilder<T> protected constructor(protected val context
 
     }
 
-    class BannerAdsBuilder(context: Context, unitId: String):AdsProviderBuilder<BannerAdsProvider>(context,unitId){
+    class BannerAdsBuilder(context: Context, unitId: String):
+        AdsProviderBuilder<BannerAdsProvider>(context,unitId){
 
         var adSize = AdSize.BANNER
 
@@ -80,7 +81,8 @@ abstract class AdsProviderBuilder<T> protected constructor(protected val context
     }
 
 
-    class InterstitialAdsBuilder(context: Context, unitId: String):AdsProviderBuilder<InterstitialAdsProvider>(context, unitId){
+    class InterstitialAdsBuilder(context: Context, unitId: String):
+        AdsProviderBuilder<InterstitialAdsProvider>(context, unitId){
 
         override fun build(): InterstitialAdsProvider {
             return InterstitialAdsProvider(context, unitId, configuration, adLoadListener)
@@ -88,7 +90,8 @@ abstract class AdsProviderBuilder<T> protected constructor(protected val context
 
     }
 
-    class RewardedAdsBuilder(context: Context, unitId: String):AdsProviderBuilder<RewardedAdsProvider>(context, unitId){
+    class RewardedAdsBuilder(context: Context, unitId: String):
+        AdsProviderBuilder<RewardedAdsProvider>(context, unitId){
 
         override fun build(): RewardedAdsProvider {
             return RewardedAdsProvider(context, unitId, configuration, adLoadListener)
@@ -96,7 +99,8 @@ abstract class AdsProviderBuilder<T> protected constructor(protected val context
 
     }
 
-    class AppOpenAdsBuilder(context: Context, unitId: String):AdsProviderBuilder<AppOpenAdsProvider>(context, unitId){
+    class AppOpenAdsBuilder(context: Context, unitId: String):
+        AdsProviderBuilder<AppOpenAdsProvider>(context, unitId){
 
         override fun build(): AppOpenAdsProvider {
             return AppOpenAdsProvider(context, unitId, configuration, adLoadListener)

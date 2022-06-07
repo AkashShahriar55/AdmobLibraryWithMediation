@@ -1,14 +1,8 @@
-package com.cookietech.admoblibrarywithmediation.Manager
+package com.cookietech.android_ads_library.Manager
 
 import android.content.Context
-import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
-import com.tasnim.colorsplash.walkthrough.fragments.AdFragment
-import java.util.*
 
 class NativeAdsProvider internal constructor(
     context: Context,

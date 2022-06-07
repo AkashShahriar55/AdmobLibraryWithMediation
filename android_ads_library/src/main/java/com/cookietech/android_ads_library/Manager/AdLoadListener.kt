@@ -1,4 +1,4 @@
-package com.cookietech.admoblibrarywithmediation.Manager
+package com.cookietech.android_ads_library.Manager
 
 interface AdLoadListener {
 

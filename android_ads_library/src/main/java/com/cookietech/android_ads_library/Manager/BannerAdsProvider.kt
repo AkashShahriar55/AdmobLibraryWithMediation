@@ -1,7 +1,6 @@
-package com.cookietech.admoblibrarywithmediation.Manager
+package com.cookietech.android_ads_library.Manager
 
 import android.content.Context
-import android.util.Log
 import com.google.android.gms.ads.*
 
 class BannerAdsProvider(
@@ -10,7 +9,7 @@ class BannerAdsProvider(
     configuration: Configuration,
     adLoadListener: AdLoadListener?,
     private val adSize: AdSize
-):AdsProvider<SimpleBannerAd>(context,unitId,configuration,adLoadListener) {
+): AdsProvider<SimpleBannerAd>(context,unitId,configuration,adLoadListener) {
 
 
     init {
