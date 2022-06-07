@@ -1,6 +1,8 @@
 package com.cookietech.admoblibrarywithmediation.Manager
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -9,10 +11,17 @@ import com.google.android.gms.ads.*
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import java.util.*
+import kotlin.math.min
 
 abstract class AdsProvider<adType> protected constructor(protected val context: Context,protected val unitId:String,protected val configuration: Configuration, private val adLoadListener: AdLoadListener?) {
 
     protected val adsStack = Stack<adType>()
+
+    private val handler = Handler(Looper.getMainLooper())
+
+
+    private var retryTime = 1000L;
+    private var noOfRetries = 0;
 
 
     protected fun<option> loadInternal(getCallback:()->callback<option>?, isDestroyed: ()->Boolean){
@@ -59,9 +68,36 @@ abstract class AdsProvider<adType> protected constructor(protected val context: 
                 adLoadListener?.adLoaded(adsStack.size)
                 preLoad()
                 Log.d(NativeAdsProvider.TAG, "loadAd: ad loaded stack size : " + adsStack.size)
+
+                retryTime = configuration.getRetryTime()
+                noOfRetries = 0;
             },{ message->
                 Log.d(NativeAdsProvider.TAG, "onAdFailedToLoad: $message")
+
+                if(configuration.isExponentialBackOff()){
+
+                    handler.postDelayed({
+                        preLoad()
+                    },retryTime)
+
+                    retryTime = min(
+                        retryTime * 2,
+                        Configuration.RETRY_TIMER_MAX_TIME_MILLISECONDS
+                    )
+                }else{
+
+                    if(noOfRetries < configuration.getMaxNoOfRetries()){
+                        handler.postDelayed({
+                            preLoad()
+                        },retryTime)
+
+                        noOfRetries++
+                    }
+
+                }
+
                 adLoadListener?.adLoadFailed(message)
+
             })
         }
     }

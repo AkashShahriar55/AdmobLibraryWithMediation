@@ -65,7 +65,7 @@ class TestApplication: Application() {
                     }
 
                 })
-                .configure(Configuration().preload(2).setRetryTime(1000))
+                .configure(Configuration().preload(2).linearRetryTime(1000,5))
                 .build()
 
             rewardedAdsProvider = AdsProviderBuilder
@@ -80,7 +80,7 @@ class TestApplication: Application() {
                     }
 
                 })
-                .configure(Configuration().preload(2).setRetryTime(1000))
+                .configure(Configuration().preload(2).linearRetryTime(1000,5))
                 .build()
 
         }
