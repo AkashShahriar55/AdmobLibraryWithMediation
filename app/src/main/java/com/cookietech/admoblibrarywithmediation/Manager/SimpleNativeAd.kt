@@ -11,7 +11,7 @@ import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 
-class SimpleNativeAd(context: Context, nativeAd: NativeAd) : FrameLayout(context) {
+class SimpleNativeAd(context: Context,private val nativeAd: NativeAd) : FrameLayout(context) {
 
 
 
@@ -109,5 +109,9 @@ class SimpleNativeAd(context: Context, nativeAd: NativeAd) : FrameLayout(context
 
 
 
+    }
+
+    fun getNativeAd(): NativeAd {
+        return nativeAd
     }
 }

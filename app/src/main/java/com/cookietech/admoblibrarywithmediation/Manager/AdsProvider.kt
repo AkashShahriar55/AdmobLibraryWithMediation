@@ -8,8 +8,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
+import com.google.android.gms.ads.rewarded.RewardedAd
 import java.util.*
 import kotlin.math.min
 
@@ -24,28 +26,27 @@ abstract class AdsProvider<adType> protected constructor(protected val context: 
     private var noOfRetries = 0;
 
 
-    protected fun<option> loadInternal(getCallback:()->callback<option>?, isDestroyed: ()->Boolean){
+    protected fun<option> loadInternal(onAdFetched:(ads:option)->Unit,onAdFetchFailed:(message:String)->Unit,isDestroyed: ()->Boolean){
         loadAd({ ad ->
             if(isDestroyed())
                 return@loadAd
-            Log.d(NativeAdsProvider.TAG, "ad loaded on fetch: ${getCallback()}")
-            getCallback()?.onAdFetched(ad as option)
+            Log.d(NativeAdsProvider.TAG, "ad loaded on fetch: ")
+            onAdFetched(ad as option)
         },{message->
-            Log.d(NativeAdsProvider.TAG, "ad load failed on fetch: ${getCallback()}")
-            getCallback()?.onAdFetchFailed(message)
+            Log.d(NativeAdsProvider.TAG, "ad load failed on fetch:")
+            onAdFetchFailed(message)
         })
     }
 
 
-    protected fun<option> handlePreLoadedAds(getCallback:()->callback<option>?, isDestroyed: ()->Boolean){
+    protected fun<option> handlePreLoadedAds(onAdFetched:(ads:option)->Unit,onAdFetchFailed:(message:String)->Unit, isDestroyed: ()->Boolean){
         if(!isDestroyed()){
             if(adsStack.empty()){
                 Log.d(NativeAdsProvider.TAG, "ad is empty: ")
-                getCallback()?.onAdFetchFailed("ad is empty");
+                onAdFetchFailed("ad is empty");
             }else{
 
-                getCallback()?.onAdFetched(adsStack.pop() as option)
-
+                onAdFetched(adsStack.pop() as option)
                 preLoad()
             }
         }
@@ -103,33 +104,45 @@ abstract class AdsProvider<adType> protected constructor(protected val context: 
     }
 
 
-    open fun fetch():Fetcher<adType> {
-        return Fetcher()
+    fun fetch(callback: callback<adType>,listener: AdEventListener? = null):Fetcher<adType> {
+        val fullScreenContentCallback = object : FullScreenContentCallback(){
+            override fun onAdClicked() {
+                listener?.onAdClicked()
+            }
+
+            override fun onAdDismissedFullScreenContent() {
+                listener?.onAdDismissedFullScreenContent()
+            }
+
+            override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                listener?.onAdFailedToShowFullScreenContent(p0)
+            }
+
+            override fun onAdImpression() {
+                listener?.onAdImpression()
+            }
+
+            override fun onAdShowedFullScreenContent() {
+                listener?.onAdShowedFullScreenContent()
+            }
+        }
+        return Fetcher(callback,fullScreenContentCallback)
     }
 
-    inner class Fetcher<option>(): LifecycleEventObserver {
+    open fun fetch(callback: callback<adType>):Fetcher<adType> {
+        return Fetcher(callback)
+    }
+
+    inner class Fetcher<option> constructor(private val callback: callback<option>,private val fullScreenContentCallback: FullScreenContentCallback? = null): LifecycleEventObserver {
         private var isDestroyed = false;
-        private var callback: callback<option>? = null
+        private var currentAd:option? = null
+
+
 
         init {
 
         }
 
-
-
-
-
-        fun addCallback(callback: callback<option>){
-            Log.d(NativeAdsProvider.TAG, "addCallback: callback set ")
-            this.callback = callback
-            if(configuration.isPreload() && adsStack.size > 0){
-                handlePreLoadedAds({
-                    callback
-                },{
-                    isDestroyed
-                })
-            }
-        }
 
 
 
@@ -142,32 +155,57 @@ abstract class AdsProvider<adType> protected constructor(protected val context: 
 
 
         init {
-
             if(!configuration.isPreload() || adsStack.size < 1){
-                loadInternal({
-                    callback
+                loadInternal<option>({ ad ->
+                    currentAd = ad
+                    Log.d("callback_test", ": $ad $fullScreenContentCallback")
+                    if(ad is InterstitialAd){
+                        ad.fullScreenContentCallback = fullScreenContentCallback
+                    }else if(ad is RewardedAd){
+                        ad.fullScreenContentCallback = fullScreenContentCallback
+                    }
+                    callback.onAdFetched(ad)
+                },{message->
+                    callback.onAdFetchFailed(message)
                 },{
                     isDestroyed
                 })
             }else{
 
-                handlePreLoadedAds({
-                    callback
+                handlePreLoadedAds<option>({ ad ->
+                    currentAd = ad
+                    Log.d("callback_test", ": $ad $fullScreenContentCallback")
+                    if(ad is InterstitialAd){
+                        ad.fullScreenContentCallback = fullScreenContentCallback
+                    }else if(ad is RewardedAd){
+                        ad.fullScreenContentCallback = fullScreenContentCallback
+                    }
+                    callback.onAdFetched(ad)
+                },{message->
+                    callback.onAdFetchFailed(message)
                 },{
                     isDestroyed
                 })
             }
-
-
-
-
-
         }
 
         override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
             Log.d(NativeAdsProvider.TAG, "onStateChanged: " + event)
-
             isDestroyed = event == Lifecycle.Event.ON_DESTROY
+            if(isDestroyed){
+                currentAd?.let {
+                    when{
+                        currentAd is SimpleNativeAd->{
+                           ( currentAd as SimpleNativeAd).getNativeAd().destroy()
+                        }
+
+                        currentAd is SimpleBannerAd->{
+                            ( currentAd as SimpleBannerAd).getBannerAd().destroy()
+                        }
+                    }
+                }
+            }
+
         }
     }
 

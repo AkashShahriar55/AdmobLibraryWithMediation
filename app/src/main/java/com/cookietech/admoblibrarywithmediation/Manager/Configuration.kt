@@ -52,7 +52,7 @@ class Configuration {
     }
 
     companion object {
-         const val RETRY_TIMER_START_MILLISECONDS = 1L * 1000L
-         const val RETRY_TIMER_MAX_TIME_MILLISECONDS = 1000L * 60L  // 15 minutes
+         const val RETRY_TIMER_START_MILLISECONDS = 1L * 10000L
+         const val RETRY_TIMER_MAX_TIME_MILLISECONDS = 1000L * 60L * 5L // 15 minutes
     }
 }

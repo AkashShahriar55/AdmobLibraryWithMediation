@@ -48,17 +48,19 @@ class RewardedAdActivity : AppCompatActivity() {
 //
 //        })
 
-        (application as TestApplication).container.rewardedAdsProvider.fetch().addCallback(object:
-            AdsProvider.callback<RewardedAd>{
-            override fun onAdFetched(ads: RewardedAd) {
-                showRewardedAd(ads)
-            }
+        (application as TestApplication).container.rewardedAdsProvider.fetch(
+            object:
+                AdsProvider.callback<RewardedAd>{
+                override fun onAdFetched(ads: RewardedAd) {
+                    showRewardedAd(ads)
+                }
 
-            override fun onAdFetchFailed(message: String) {
-                Log.d(NativeAdsProvider.TAG, "onAdFetchFailed: " + message)
-            }
+                override fun onAdFetchFailed(message: String) {
+                    Log.d(NativeAdsProvider.TAG, "onAdFetchFailed: " + message)
+                }
 
-        })
+            }
+        )
     }
 
     fun showRewardedAd(rewardedAd: RewardedAd)
@@ -92,6 +94,8 @@ class RewardedAdActivity : AppCompatActivity() {
             override fun onAdImpression() {
 
             }
+
+
         }
 
         //rewardedAd.rewardItem.a = 10

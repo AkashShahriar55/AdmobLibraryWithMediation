@@ -5,8 +5,10 @@ import android.util.Log
 import com.cookietech.admoblibrarywithmediation.Manager.*
 import com.cookietech.admoblibrarywithmediation.nativead.NativeAdActivity
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.nativead.NativeAd
+import java.util.*
 
 class TestApplication: Application() {
 
@@ -14,10 +16,10 @@ class TestApplication: Application() {
     lateinit var appOpenAdManager: AppOpenAdManager
 
     inner class Container{
-        lateinit var provider:NativeAdsProvider
-        lateinit var interstitialProvider:InterstitialAdsProvider
-        lateinit var bannerProvider:BannerAdsProvider
-        lateinit var rewardedAdsProvider: RewardedAdsProvider
+        var provider:NativeAdsProvider
+        var interstitialProvider:InterstitialAdsProvider
+        var bannerProvider:BannerAdsProvider
+        var rewardedAdsProvider: RewardedAdsProvider
         lateinit var appOpenAdsProvider: AppOpenAdsProvider
         init {
 
@@ -35,7 +37,7 @@ class TestApplication: Application() {
                     }
 
                 })
-//                .configure(Configuration().preload(3).setRetryTime(1000))
+                .configure(Configuration().preload(3))
                 .build()
 
 
@@ -67,11 +69,11 @@ class TestApplication: Application() {
                     }
 
                 })
-                .configure(Configuration().preload(2).linearRetryTime(1000,5))
+                .configure(Configuration().preload(2).linearRetryTime(10000,5))
                 .build()
 
             rewardedAdsProvider = AdsProviderBuilder
-                .rewardedAdsBuilder(this@TestApplication,"ca-app-pub-3940256099942544/5224354917")
+                .rewardedAdsBuilder(this@TestApplication,"ca-app-pub-2736964955629655/9133713789")
                 .addListener(object: AdLoadListener{
                     override fun adLoaded(noOfAds: Int) {
                         Log.d("sometag", "adLoaded: " + noOfAds)
@@ -82,7 +84,7 @@ class TestApplication: Application() {
                     }
 
                 })
-                .configure(Configuration().preload(2).linearRetryTime(1000,5))
+                .configure(Configuration().preload(2).linearRetryTime(10000,5))
                 .build()
 
             appOpenAdsProvider = AdsProviderBuilder
@@ -97,7 +99,7 @@ class TestApplication: Application() {
                     }
 
                 })
-                .configure(Configuration().preload(2).linearRetryTime(1000,5))
+                .configure(Configuration().preload(2).linearRetryTime(10000,5))
                 .build()
 
         }
@@ -110,13 +112,14 @@ class TestApplication: Application() {
         container = Container()
 
 
-
         MobileAds.initialize(this) {
             Log.d("ads_initialize", "onCreate: " + it.adapterStatusMap)
         }
 
-        appOpenAdManager = AppOpenAdManager(this)
+
 
     }
+
+
 
 }

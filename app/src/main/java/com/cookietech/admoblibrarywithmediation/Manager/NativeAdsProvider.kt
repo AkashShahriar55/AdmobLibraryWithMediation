@@ -24,7 +24,7 @@ class NativeAdsProvider internal constructor(
         }
     }
 
-    var isFragment = false;
+
 
     var videoOptions = VideoOptions.Builder()
         .setStartMuted(true)
@@ -52,10 +52,6 @@ class NativeAdsProvider internal constructor(
 
 
 
-    override fun fetch(): Fetcher<SimpleNativeAd> {
-        isFragment = false
-        return super.fetch()
-    }
 
 
     override fun loadAd(

@@ -3,6 +3,7 @@ package com.cookietech.admoblibrarywithmediation.Manager
 import android.content.Context
 import android.util.Log
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
@@ -20,6 +21,8 @@ class InterstitialAdsProvider(
             preLoad()
         }
     }
+
+
 
     override fun loadAd(
         adLoadSuccess: (ad: InterstitialAd) -> Unit,

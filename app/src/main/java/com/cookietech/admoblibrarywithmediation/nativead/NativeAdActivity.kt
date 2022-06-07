@@ -1,5 +1,6 @@
 package com.cookietech.admoblibrarywithmediation.nativead
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,28 +20,26 @@ class NativeAdActivity : AppCompatActivity() {
 
 
 
-
-
+        AppOpenAdManager(this,(application as TestApplication).container.appOpenAdsProvider)
 
 
 
         (application as TestApplication).container.provider
-            .fetch()
+            .fetch(object :
+                AdsProvider.callback<SimpleNativeAd> {
+                override fun onAdFetched(ads: SimpleNativeAd) {
+                    Log.d(TAG, "onAdFetched: ")
+
+                    binding.adHolder.addView(ads)
+
+                }
+
+                override fun onAdFetchFailed(message: String) {
+                    Log.d(TAG, "onAdFetchFailed: ")
+                }
+
+            })
             .addObserver(lifecycle)
-            .addCallback(object :
-            AdsProvider.callback<SimpleNativeAd> {
-            override fun onAdFetched(ads: SimpleNativeAd) {
-                Log.d(TAG, "onAdFetched: ")
-
-                binding.adHolder.addView(ads)
-
-            }
-
-            override fun onAdFetchFailed(message: String) {
-                Log.d(TAG, "onAdFetchFailed: ")
-            }
-
-        })
 
 
 //        (application as TestApplication).container.bannerProvider.fetch().addCallback(object : AdsProvider.callback<SimpleBannerAd>{

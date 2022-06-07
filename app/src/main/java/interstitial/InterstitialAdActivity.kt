@@ -3,17 +3,14 @@ package interstitial
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import com.cookietech.admoblibrarywithmediation.Manager.AdEventListener
 import com.cookietech.admoblibrarywithmediation.Manager.AdsProvider
 import com.cookietech.admoblibrarywithmediation.Manager.NativeAdsProvider
 import com.cookietech.admoblibrarywithmediation.R
 import com.cookietech.admoblibrarywithmediation.TestApplication
 import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 class InterstitialAdActivity : AppCompatActivity() {
     private var interstitialAd: InterstitialAd? = null
@@ -40,17 +37,42 @@ class InterstitialAdActivity : AppCompatActivity() {
 //            }
 //        })
 
+        (application as TestApplication).container.interstitialProvider
 
-        (application as TestApplication).container.interstitialProvider.fetch().addCallback(object:AdsProvider.callback<InterstitialAd>{
-            override fun onAdFetched(ads: InterstitialAd) {
-                showInterstitiaAd(ads)
-            }
 
-            override fun onAdFetchFailed(message: String) {
-                Log.d(NativeAdsProvider.TAG, "onAdFetchFailed: " + message)
-            }
+        (application as TestApplication).container.interstitialProvider
+            .fetch(object:AdsProvider.callback<InterstitialAd>{
+                override fun onAdFetched(ads: InterstitialAd) {
+                    showInterstitiaAd(ads)
+                }
 
-        })
+                override fun onAdFetchFailed(message: String) {
+                    Log.d(NativeAdsProvider.TAG, "onAdFetchFailed: " + message)
+                }
+
+            },object : AdEventListener() {
+                override fun onAdClicked() {
+                    Log.d("callback_test", "onAdClicked: " )
+                }
+
+                override fun onAdDismissedFullScreenContent() {
+                    Log.d("callback_test", "onAdDismissedFullScreenContent: ")
+                }
+
+                override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                    Log.d("callback_test", "onAdFailedToShowFullScreenContent: $p0")
+                }
+
+                override fun onAdImpression() {
+                    Log.d("callback_test", "onAdImpression: ")
+                }
+
+                override fun onAdShowedFullScreenContent() {
+                    Log.d("callback_test", "onAdShowedFullScreenContent: ")
+                }
+            })
+            .addObserver(lifecycle)
+
     }
 
     fun showInterstitiaAd(interstitialAd: InterstitialAd)
@@ -59,37 +81,37 @@ class InterstitialAdActivity : AppCompatActivity() {
         {
             return
         }
-        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-
-            override fun onAdClicked() {
-                Log.d("Rudra_Das"," onAdClicked")
-
-
-            }
-
-            override fun onAdImpression() {
-                Log.d("Rudra_Das"," onAdImpression")
-            }
-
-            override fun onAdDismissedFullScreenContent() {
-                // Don't forget to set the ad reference to null so you
-                // don't show the ad a second time.
-
-                Log.d("Rudra_Das"," onAdDismissedFullScreenContent")
-            }
-
-            override fun onAdFailedToShowFullScreenContent(p0: AdError) {
-                Log.d("Rudra_Das"," onAdFailedToShowFullScreenContent")
-
-            }
-
-            override fun onAdShowedFullScreenContent() {
-                // Called when ad is dismissed.
-
-                Log.d("Rudra_Das"," onAdShowedFullScreenContent")
-            }
-        }
-        interstitialAd?.show(this)
+//        interstitialAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+//
+//            override fun onAdClicked() {
+//                Log.d("Rudra_Das"," onAdClicked")
+//
+//
+//            }
+//
+//            override fun onAdImpression() {
+//                Log.d("Rudra_Das"," onAdImpression")
+//            }
+//
+//            override fun onAdDismissedFullScreenContent() {
+//                // Don't forget to set the ad reference to null so you
+//                // don't show the ad a second time.
+//
+//                Log.d("Rudra_Das"," onAdDismissedFullScreenContent")
+//            }
+//
+//            override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+//                Log.d("Rudra_Das"," onAdFailedToShowFullScreenContent")
+//
+//            }
+//
+//            override fun onAdShowedFullScreenContent() {
+//                // Called when ad is dismissed.
+//
+//                Log.d("Rudra_Das"," onAdShowedFullScreenContent")
+//            }
+//        }
+        interstitialAd.show(this)
     }
 
 

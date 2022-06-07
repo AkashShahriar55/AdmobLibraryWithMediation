@@ -2,10 +2,15 @@ package com.cookietech.admoblibrarywithmediation.Manager
 
 import android.app.Activity
 import android.app.Application
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.PackageManagerCompat.LOG_TAG
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.cookietech.admoblibrarywithmediation.TestApplication
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
@@ -14,7 +19,8 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 
 
-class AppOpenAdManager(val context: TestApplication):Application.ActivityLifecycleCallbacks,
+
+class AppOpenAdManager(val activity: FragmentActivity,val adsProvider: AppOpenAdsProvider):Application.ActivityLifecycleCallbacks,
                                                         LifecycleEventObserver{
 
     var isShowingAd = false
@@ -24,8 +30,8 @@ class AppOpenAdManager(val context: TestApplication):Application.ActivityLifecyc
     var cnt = 0
 
     init {
-        context.registerActivityLifecycleCallbacks(this)
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+        activity.application.registerActivityLifecycleCallbacks(this)
+        activity.lifecycle.addObserver(this)
     }
 
     fun fetchAd()
@@ -52,7 +58,7 @@ class AppOpenAdManager(val context: TestApplication):Application.ActivityLifecyc
 //
 //        })
 
-        context.container.appOpenAdsProvider.fetch().addCallback(object: AdsProvider.callback<AppOpenAd>{
+        adsProvider.fetch(object: AdsProvider.callback<AppOpenAd>{
             override fun onAdFetched(ads: AppOpenAd) {
                 showAdIfAvailable(ads)
             }
